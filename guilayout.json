@@ -1,0 +1,18 @@
+{
+    "playernumber":[
+        {"label": "Player 1", "row":"1", "column":"0", "value":"1" },
+        {"label": "Player 2", "row":"1", "column":"1", "value":"2" },
+        {"label": "Player 3", "row":"1", "column":"2", "value":"3" },
+        {"label": "Player 4", "row":"1", "column":"3", "value":"4" }
+    ],
+    "stagenumber":[
+        {"label": "Stage 1", "row":"1", "column":"0", "value":"1" },
+        {"label": "Stage 2", "row":"1", "column":"1", "value":"2" },
+        {"label": "Stage 3", "row":"1", "column":"2", "value":"3" },
+        {"label": "Stage 4", "row":"1", "column":"3", "value":"4" },
+        {"label": "Stage 5", "row":"1", "column":"4", "value":"5" }
+    ],
+    "Icons": "C:/Users/sdevasenapathy/Documents/Scoreboarder/char-icons/",
+    "Stages": "C:/Users/sdevasenapathy/Documents/Scoreboarder/stages/",
+    "OBSFolder": "C:/Users/sdevasenapathy/Documents/OBSFolder/"
+}
