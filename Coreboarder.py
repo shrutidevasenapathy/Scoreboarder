@@ -1,3 +1,6 @@
+''' Copyright 2019 VogelLover '''
+''' File contains core functionality of the Scoreboarder'''
+
 from tkinter import *
 import getConfig as config
 from PIL import Image, ImageTk
@@ -8,36 +11,39 @@ from shutil import copy2
 from FrameElements import *
 import math
 
-class GuiSkeleton():
+# This implements the entire structure and functionality of
+# the scoreboarder app.
+class DrawScoreboarder():
     def __init__(self, DefaultColour):
-        self.defaultColor = DefaultColour
+
+        self.defaultColor = DefaultColour       # used to clear a custom colour setting
+
+        # Each gridrow is a frame in the grid. This way we force different grid layouts 
         matchgridrow       = 0
         stagechoicegridrow = 1
         stageimagegridrow  = 2
         playergridrow      = 3
         playernamegridrow  = 4
         scoregridrow       = 5
-        roundnamegridrow   = 6
-        charsgridrow       = 7
-
+        charsgridrow       = 6
+        roundnamegridrow   = 7
 
         self.matchframe       = makeFrameInRow(matchgridrow)
-        self.stageimageframe  = makeFrameInRow(stageimagegridrow)
         self.stagechoiceframe = makeFrameInRow(stagechoicegridrow)
+        self.stageimageframe  = makeFrameInRow(stageimagegridrow)
         self.playerframe      = makeFrameInRow(playergridrow)
-        self.charsframe       = makeFrameInRow(charsgridrow)
         self.playernameframe  = makeFrameInRow(playernamegridrow)
         self.scoreframe       = makeFrameInRow(scoregridrow)
+        self.charsframe       = makeFrameInRow(charsgridrow)
         self.roundnameframe   = makeFrameInRow(roundnamegridrow)
 
-
-        '''Make match numbers radiobuttons'''
+        '''Make radiobuttons for choice between Three Matcher and Five Matcher'''
         #Create a variable that acts as the "group" indicator for radiobuttons related to a given choice
         self.matchchoice = IntVar()
         self.matchchoice.set(5)
         self.matchCount = makeRadiobuttonGroup(configuration['match_count'], self.matchframe, self.matchchoice, self.setMatches)
 
-        # Make all stage radiobuttons
+        '''Make radiobuttons to set the stage for each match (of the total 3 or 5)'''
         self.stagechoice = IntVar()
         self.stagechoice.set(1)
         self.stageRadiobutton = makeRadiobuttonGroup(configuration['stagenumber'], self.stagechoiceframe, self.stagechoice, self.highlightChosenStage)
@@ -45,7 +51,7 @@ class GuiSkeleton():
         for radio in self.stageRadiobutton:
             self.chosenstage.append(Button())
 
-        # Make all player radiobuttons
+        '''Make radiobuttons to choose the player number to configure (allows setting name, score, character)'''
         self.playerchoice = IntVar()
         self.playerchoice.set(1)
         self.playerRadiobutton = makeRadiobuttonGroup(configuration['playernumber'], self.playerframe, self.playerchoice, self.highlightChosenChar)
@@ -56,7 +62,7 @@ class GuiSkeleton():
             self.playerscore.append(0)
 
 
-        #Make all stage icons into a row of buttons
+        '''Make a grid of buttons to set stage icon for selected match (selected using match radio button)'''
         self.localcopy_stageimage = []
         rowval = stageimagegridrow
         colval = 0
@@ -87,12 +93,13 @@ class GuiSkeleton():
         makeTextBox(self.roundnameframe, "Round name", self.roundname, 0, 1)
         makeButton(self.roundnameframe, "Set name", self.setRoundName, 0, 3)
 
-        #Make all characters icons into a grid of buttons
+        '''Make a grid of buttons to set character icon for selected player (selected using player radio button)'''
         self.charimg = []
         self.charbutton = []
         rowval = charsgridrow
         colval = 0
         buttoncount = 0
+        rowval = rowval + 1
         for img in config.charImages:
             self.charimg.append(ImageTk.PhotoImage(img))
         for photo, path in itertools.zip_longest(self.charimg, config.charImagePaths):
@@ -101,7 +108,7 @@ class GuiSkeleton():
             self.charbutton.append(b)
             b.grid(row=rowval, column=colval)
             colval = colval + 1
-            if colval == 17 :
+            if colval == 16 :
                 colval = 0
                 rowval = rowval + 1 
     def upScore(self):

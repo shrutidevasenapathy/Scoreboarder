@@ -5,23 +5,17 @@
     ],
     "playernumber":[
         {"label": "Player 1", "row":"1", "column":"0", "value":"1" },
-        {"label": "Player 2", "row":"1", "column":"1", "value":"2" },
-        {"label": "Player 3", "row":"1", "column":"2", "value":"3" },
-        {"label": "Player 4", "row":"1", "column":"3", "value":"4" }
+        {"label": "Player 2", "row":"1", "column":"1", "value":"2" }
     ],
     "stagenumber":[
-        {"label": "Stage 1", "row":"1", "column":"0", "value":"1" },
-        {"label": "Stage 2", "row":"1", "column":"1", "value":"2" },
-        {"label": "Stage 3", "row":"1", "column":"2", "value":"3" },
-        {"label": "Stage 4", "row":"1", "column":"3", "value":"4" },
-        {"label": "Stage 5", "row":"1", "column":"4", "value":"5" }
-    ],
-    "textbox":[
-        {"label":"Player name", "row":1, "column":2},
-        {"label":"Player name", "row":2, "column":4}
+        {"label": "Match 1", "row":"1", "column":"0", "value":"1" },
+        {"label": "Match 2", "row":"1", "column":"1", "value":"2" },
+        {"label": "Match 3", "row":"1", "column":"2", "value":"3" },
+        {"label": "Match 4", "row":"1", "column":"3", "value":"4" },
+        {"label": "Match 5", "row":"1", "column":"4", "value":"5" }
     ],
     "Icons": "char-icons/",
-    "Stages": "stages/",
+    "Stages": "stage-icons/",
     "OBSFolder": "C:/Users/sdevasenapathy/Documents/OBSFolder/",
     "Scores": "C:/Users/sdevasenapathy/Documents/OBSFolder/Scores/",
     "Playernames":"C:/Users/sdevasenapathy/Documents/OBSFolder/PlayerNames/",

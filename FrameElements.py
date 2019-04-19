@@ -1,3 +1,7 @@
+''' Copyright 2019 VogelLover '''
+''' File contains implementation of some tkinter frame elements 
+ that are used more than once in Coreboarder'''
+
 from tkinter import *
 def makeFrameInRow(rownum):
     newframe = Frame()

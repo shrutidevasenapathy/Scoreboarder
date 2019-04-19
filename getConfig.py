@@ -1,3 +1,7 @@
+''' Copyright 2019 VogelLover '''
+''' File is used to get locations of folders, and other config elements
+from guiLayout.json'''
+
 #!/usr/bin/python3
 
 import json
