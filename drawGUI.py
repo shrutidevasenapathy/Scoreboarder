@@ -6,7 +6,7 @@ configuration = config.configuration
 from functools import partial
 from shutil import copy2
 from FrameElements import *
-
+import math
 
 class GuiSkeleton():
     def __init__(self, DefaultColour):
@@ -16,7 +16,9 @@ class GuiSkeleton():
         stageimagegridrow  = 2
         playergridrow      = 3
         playernamegridrow  = 4
-        charsgridrow       = 5
+        scoregridrow       = 5
+        roundnamegridrow   = 6
+        charsgridrow       = 7
 
 
         self.matchframe       = makeFrameInRow(matchgridrow)
@@ -25,6 +27,9 @@ class GuiSkeleton():
         self.playerframe      = makeFrameInRow(playergridrow)
         self.charsframe       = makeFrameInRow(charsgridrow)
         self.playernameframe  = makeFrameInRow(playernamegridrow)
+        self.scoreframe       = makeFrameInRow(scoregridrow)
+        self.roundnameframe   = makeFrameInRow(roundnamegridrow)
+
 
         '''Make match numbers radiobuttons'''
         #Create a variable that acts as the "group" indicator for radiobuttons related to a given choice
@@ -45,8 +50,11 @@ class GuiSkeleton():
         self.playerchoice.set(1)
         self.playerRadiobutton = makeRadiobuttonGroup(configuration['playernumber'], self.playerframe, self.playerchoice, self.highlightChosenChar)
         self.chosencharacter = []
+        self.playerscore = []
         for radio in self.playerRadiobutton:
-            self.chosencharacter.append(Button()) 
+            self.chosencharacter.append(Button())
+            self.playerscore.append(0)
+
 
         #Make all stage icons into a row of buttons
         self.localcopy_stageimage = []
@@ -68,14 +76,16 @@ class GuiSkeleton():
                 rowval = rowval + 1
         
         self.playername = StringVar()
-        makeButton(self.playernameframe, "Set", self.setPlayerName, 0, 2)
         makeTextBox(self.playernameframe, "Player name", self.playername, 0, 1)
-        '''self.playernamelabel = Label(self.playernameframe, text="Player Name")
-        self.playernamelabel.grid(row=0, column=1)
-        
-        Entry(self.playernameframe, textvariable=self.playername).grid(row=0, column=2)
-        Button(self.playernameframe, text="Set", command=self.setPlayerName).grid(row=0, column=3)'''
+        makeButton(self.playernameframe, "Set name", self.setPlayerName, 0, 3)
 
+        Label(self.scoreframe, text="Set Score").grid(row=0, column=1)
+        makeButton(self.scoreframe, "Score +", self.upScore, 0, 2)
+        makeButton(self.scoreframe, "Score -", self.downScore, 0, 3)
+
+        self.roundname = StringVar()
+        makeTextBox(self.roundnameframe, "Round name", self.roundname, 0, 1)
+        makeButton(self.roundnameframe, "Set name", self.setRoundName, 0, 3)
 
         #Make all characters icons into a grid of buttons
         self.charimg = []
@@ -91,21 +101,49 @@ class GuiSkeleton():
             self.charbutton.append(b)
             b.grid(row=rowval, column=colval)
             colval = colval + 1
-            if colval == 15 :
+            if colval == 17 :
                 colval = 0
                 rowval = rowval + 1 
-    
+    def upScore(self):
+        player = self.playerchoice.get()
+        score = self.playerscore[player-1]
+        score = score + 1
+        if score > self.matchchoice.get():
+            score = self.matchchoice.get()
+        self.playerscore[player-1] = score
+        filename = config.scoresDirectory + "Score"+str(player)+".txt"
+        self.writeStringToFileName(filename, str(score))
+
+    def downScore(self):
+        player = self.playerchoice.get()
+        score = self.playerscore[player-1]
+        score = score - 1
+        if score < 0 :
+            score = 0
+        self.playerscore[player-1] = score
+        filename = config.scoresDirectory + "Score"+str(player)+".txt"
+        self.writeStringToFileName(filename, str(score))
+
+
+    def writeStringToFileName(self, filename, string):
+        open(filename, 'w').close()
+        file1 = open(filename, "w")
+        file1.write(string)
+        file1.close()
+
     def setPlayerName(self):
         name = self.playername.get()
         player = self.playerchoice.get()
-        if name== "":
+        if name == "":
             name = "Player " + str(player)
         self.playerRadiobutton[player-1].config(text=name)
-        filename = "Player"+str(player)+'.txt'
-        open(filename, 'w').close()
-        file1 = open(filename, "w")
-        file1.write(name)
-        file1.close()
+        filename = config.playerNameDirectory + "Player"+str(player)+'.txt'
+        self.writeStringToFileName(filename, name)
+    
+    def setRoundName(self):
+        roundname = self.roundname.get()
+        filename = config.roundNameDirectory + "Roundname.txt"
+        self.writeStringToFileName(filename, roundname)
 
     #copy file to destination with a choice number in the name
     def copytodestinationwithname(self, path, filenamepart, choice, count):

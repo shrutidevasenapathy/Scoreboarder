@@ -1,3 +1,6 @@
 *.exe
 char-icons/*
 stages/*
+*.txt
+*.pyc
+__pycache__

@@ -25,8 +25,11 @@ def getAllImagesFrom(dir):
         filepaths.append(dir + imagefilename)
     return images, filepaths
 
-stagesDirectory = configuration['Stages']
+stagesDirectory      = configuration['Stages']
 destinationDirectory = configuration['OBSFolder']
+scoresDirectory      = configuration['Scores']
+playerNameDirectory  = configuration['Playernames']
+roundNameDirectory   = configuration['Round']
 
-charImages, charImagePaths = getAllImagesFrom(configuration['Icons'])
+charImages, charImagePaths   = getAllImagesFrom(configuration['Icons'])
 stageImages, stageImagePaths = getAllImagesFrom(configuration['Stages'])

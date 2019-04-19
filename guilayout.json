@@ -22,5 +22,8 @@
     ],
     "Icons": "char-icons/",
     "Stages": "stages/",
-    "OBSFolder": "C:/Users/sdevasenapathy/Documents/OBSFolder/"
+    "OBSFolder": "C:/Users/sdevasenapathy/Documents/OBSFolder/",
+    "Scores": "C:/Users/sdevasenapathy/Documents/OBSFolder/Scores/",
+    "Playernames":"C:/Users/sdevasenapathy/Documents/OBSFolder/PlayerNames/",
+    "Round":"C:/Users/sdevasenapathy/Documents/OBSFolder/Round/"
 }

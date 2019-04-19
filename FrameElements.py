@@ -17,7 +17,7 @@ def makeRadiobuttonGroup(configarray, frame, groupvar, action):
 def makeTextBox(frame, textlabel, textvar, rowval, colval):
     labelname = Label(frame, text=textlabel)
     labelname.grid(row=rowval, column=colval)
-    Entry(frame, textvariable=textvar).grid(row=rowval, column=colval)
+    Entry(frame, textvariable=textvar).grid(row=rowval, column=colval+1)
 
 def makeButton(frame, buttonlabel, command, rowval, colval):
     button = Button(frame, text=buttonlabel, command=command)
