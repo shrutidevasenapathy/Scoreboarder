@@ -1,7 +1,7 @@
 Copyright - 2019 VogelLover
 # Scoreboarder
 
-Basic application to assist with scoreboarding specific to SSBM. 
+Simple application to assist with scoreboarding specific to SSBM. 
 
 ## Requires: 
 - Python 3 (or above)
