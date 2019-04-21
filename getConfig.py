@@ -1,6 +1,6 @@
 ''' Copyright 2019 VogelLover '''
 ''' File is used to get locations of folders, and other config elements
-from guiLayout.json'''
+from folderMap.json'''
 
 #!/usr/bin/python3
 
@@ -8,7 +8,7 @@ import json
 from os import walk
 from PIL import Image, ImageTk
 
-with open('guilayout.json') as layoutlist:
+with open('folderMap.json') as layoutlist:
     configuration = dict(json.load(layoutlist))
 
 
