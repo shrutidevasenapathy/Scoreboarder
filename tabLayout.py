@@ -23,17 +23,14 @@ class MakeTabLayout():
 
         self.PlayerTab = makeFrameTab(self.widget)
         self.StageTab  = makeFrameTab(self.widget)
-        self.ScoreTab  = makeFrameTab(self.widget)
         self.AboutTab  = makeFrameTab(self.widget)
 
         self.makePlayerMenu(self.PlayerTab)
         self.makeStageMenu (self.StageTab )
-        self.makeScoreTab  (self.ScoreTab)
         self.makeAboutTab  (self.AboutTab)
 
         self.widget.add(self.PlayerTab, text="Players") 
         self.widget.add(self.StageTab,  text="Stages")
-        self.widget.add(self.ScoreTab,  text="Scores")
         self.widget.add(self.AboutTab,  text="About")
     
         self.widget.grid(row=1, column=1)
@@ -129,30 +126,37 @@ class MakeTabLayout():
         self.playerScore = []
         self.choiceOfPlayer = IntVar()
         self.choiceOfPlayer.set(1)
-
-        self.playerRadiobutton = makeRadiobuttonGroup(playerNumberArray, framename, self.choiceOfPlayer,0)
+        CharChoiceButtonFrame = Frame(framename)
+        CharChoiceButtonFrame.grid(row=0, column=0)
+        PlayerRadioButtonFrame = Frame(framename)
+        PlayerRadioButtonFrame.grid(row=1, column=0)
+        EnterPlayerNameFrame = Frame(framename)
+        EnterPlayerNameFrame.grid(row=2, column=0)
+        self.playerRadiobutton = makeRadiobuttonGroup(playerNumberArray, PlayerRadioButtonFrame, self.choiceOfPlayer, self.clearTextbox)
         for radio in self.playerRadiobutton:
+            radio.grid_configure(sticky=E)
             self.chosenChar.append(Button())
             self.playerScore.append(0)
 
-        self.charChoiceButton = Button(framename, command=self.ShowCharactersWindow, text="Choose Character")
-        self.charChoiceButton.grid(row=0, column=1, columnspan=2)
+        self.charChoiceButton = Button(CharChoiceButtonFrame, command=self.ShowCharactersWindow, text="Choose Character")
+        self.charChoiceButton.grid(row=0, column=0)
 
-        rowval = 2
         colval = 0
         for player in self.playerRadiobutton:
-            l = Label(framename, text="")
-            l.grid(row=rowval, column=colval, columnspan=2)
-            colval = colval + 2
+            l = Label(PlayerRadioButtonFrame, text="")
+            l.grid(row=1, column=colval)
+            colval = colval + 1
             self.imageLabel.append(l)
         self.playername = StringVar()
-        rowval = rowval + 1
-        nameframe = Frame(framename)
-        nameframe.grid(row=rowval, column=0)
-        makeTextBox(nameframe, "Player name", self.playername, 0, 1)
-        makeButton(nameframe, "Set name", self.setPlayerName, 0, 3)
+        Label(EnterPlayerNameFrame, text="Player name").grid(row=0,column=0)
+        self.playerNameTextbox = Entry(EnterPlayerNameFrame, textvariable=self.playername)
+        self.playerNameTextbox.grid(row=0, column=1)
+        self.playerNameTextbox.bind('<Return>', self.setPlayerName)
+        Button(EnterPlayerNameFrame, text="Set name", command=self.setPlayerName).grid(row=0, column=3)
 
-    def setPlayerName(self):
+    def clearTextbox(self, event=None):
+        self.playerNameTextbox.delete(0, 'end')
+    def setPlayerName(self, event=None):
         name = self.playername.get()
         player = self.choiceOfPlayer.get()
         if name == "":
@@ -182,14 +186,10 @@ class MakeTabLayout():
         rowval = 2
         colval = 0
         for match in self.stageRadiobutton:
-            l = Label(framename, text="label here")
+            l = Label(framename, text="")
             l.grid(row=rowval, column=colval)
             colval = colval + 1
             self.stageImageLabel.append(l)
-
-    def makeScoreTab(self, framename):
-        label = Label(framename, text="otherthings")
-        label.grid(row=0, column=0)
 
 
     def makeAboutTab(self, framename):

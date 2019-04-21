@@ -12,10 +12,10 @@ matchCountArray = [
 
 '''Definition of radiobuttons for players'''
 playerNumberArray = [
-    {"label": "Player 1", "row":"1", "column":"0", "value":"1" },
-    {"label": "Player 2", "row":"1", "column":"2", "value":"2" },
-    {"label": "Player 3", "row":"1", "column":"4", "value":"3" },
-    {"label": "Player 4", "row":"1", "column":"6", "value":"4" }
+    {"label": "Player 1", "row":"0", "column":"0", "value":"1" },
+    {"label": "Player 2", "row":"0", "column":"1", "value":"2" },
+    {"label": "Player 3", "row":"0", "column":"2", "value":"3" },
+    {"label": "Player 4", "row":"0", "column":"3", "value":"4" }
 ]
 
 '''Definition of radiobuttons for match number choice'''
