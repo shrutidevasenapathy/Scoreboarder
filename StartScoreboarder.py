@@ -15,5 +15,6 @@ except TclError:
     print ("icon bitmap error")
 
 tabLayout.MakeTabLayout(DefaultColour)
+root.resizable(width=False, height=False)
 root.mainloop()
 root.destroy

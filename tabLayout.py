@@ -93,6 +93,7 @@ class MakeTabLayout():
     # Create a pop up window with image buttons of stages
     def ShowStagesWindow(self):            
         self.stageWindow = Toplevel()
+        self.stageWindow.resizable(width=False, height=False)
         self.stagebutton.extend(self.makeImageButtonGrid(self.stageWindow, self.stageimage, config.stageImagePaths, self.copytodestinationwithname,"stages"))
         self.stageChoiceWinButton.config(state=DISABLED)
         self.stageWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(self.popupWindowCloseAction, self.stageWindow, self.stageChoiceWinButton))
@@ -101,6 +102,7 @@ class MakeTabLayout():
     # Create a pop up window with image buttons of chars
     def ShowCharactersWindow(self):            
         self.charWindow = Toplevel()
+        self.charWindow.resizable(width=False, height=False)
         charImgButton.extend(self.makeImageButtonGrid(self.charWindow, self.charimg, config.charImagePaths, self.copytodestinationwithname,"player"))
         self.charChoiceButton.config(state=DISABLED)
         self.charWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(self.popupWindowCloseAction, self.charWindow, self.charChoiceButton))
@@ -143,6 +145,21 @@ class MakeTabLayout():
             l.grid(row=rowval, column=colval, columnspan=2)
             colval = colval + 2
             self.imageLabel.append(l)
+        self.playername = StringVar()
+        rowval = rowval + 1
+        nameframe = Frame(framename)
+        nameframe.grid(row=rowval, column=0)
+        makeTextBox(nameframe, "Player name", self.playername, 0, 1)
+        makeButton(nameframe, "Set name", self.setPlayerName, 0, 3)
+
+    def setPlayerName(self):
+        name = self.playername.get()
+        player = self.choiceOfPlayer.get()
+        if name == "":
+            name = "Player " + str(player)
+        self.playerRadiobutton[player-1].config(text=name)
+        filename = config.playerNameDirectory + "Player"+str(player)+'.txt'
+        writeStringToFileName(filename, name)
 
     def makeStageMenu(self, framename):
         '''Make radiobuttons to set the stage for each match (of the total 3 or 5)'''
@@ -174,9 +191,15 @@ class MakeTabLayout():
         label = Label(framename, text="otherthings")
         label.grid(row=0, column=0)
 
+
     def makeAboutTab(self, framename):
         label = Label(framename, text="Copyright-2019 VogelLover\r\nMade with love for use with SSBM\r\n"
             "To reach out to me or to read more on how to use Scoreboarder or to look at the source, go to:\n "
                 "https://github.com/shrutidevasenapathy/Scoreboarder")
         label.grid(row=0, column=0)
 
+def writeStringToFileName(filename, string):
+    open(filename, 'w').close()
+    file1 = open(filename, "w")
+    file1.write(string)
+    file1.close()
