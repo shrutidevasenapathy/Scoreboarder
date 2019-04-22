@@ -1,5 +1,6 @@
 '''Copyright 2019 VogelLover'''
 ''' File to create outline of tabbed layout for Scoreboarder'''
+
 #!/usr/bin/env python3
 from tkinter import *
 from tkinter.ttk import *
@@ -9,32 +10,43 @@ from PIL import Image, ImageTk
 import itertools
 from functools import partial
 from shutil import copy2
+from Coreboarder import *
 
 configuration = config.configuration
-charImgButton = []
 
 class MakeTabLayout():
-    def __init__(self, DefaultColour):
-
-        self. defaultcolour = DefaultColour
-        self.getImages()
-
-        self.widget = Notebook()
-
+    def defineSelfVariables(self):
         self.PlayerTab = makeFrameTab(self.widget)
         self.StageTab  = makeFrameTab(self.widget)
         self.AboutTab  = makeFrameTab(self.widget)
+        self.charImageCopy       = []
+        self.stageImageCopy      = []
+        self.playerIconLabel     = []
+        self.chosenChar          = []
+        self.playerScore         = []
+        self.choiceOfPlayer      = IntVar()
+        self.charImageButton     = []
+        self.stageImageButton    = []
+        self.chosenstage         = []
+        self.stagebutton         = []
+        self.stageImageLabel     = []
+        self.choiceOfStage       = IntVar()
+        self.choiceOfMatchNumber = IntVar()
+        self.playerNameTextbox   = Entry()
+        self.getImages()
+
+    def __init__(self, DefaultColour):
+        self.widget = Notebook()
+        self.defaultcolour = DefaultColour
+        self.defineSelfVariables()
 
         self.makePlayerMenu(self.PlayerTab)
         self.makeStageMenu (self.StageTab )
         self.makeAboutTab  (self.AboutTab)
-
         self.widget.add(self.PlayerTab, text="Players") 
         self.widget.add(self.StageTab,  text="Stages")
         self.widget.add(self.AboutTab,  text="About")
-    
         self.widget.grid(row=1, column=1)
-
 
     #copy file to destination with a choice number in the name
     def copytodestinationwithname(self, path, filenamepart, count, photo):
@@ -43,121 +55,99 @@ class MakeTabLayout():
         # Same behaviour with player
         if filenamepart == 'player':
             choice = self.choiceOfPlayer.get()
-            self.chosenChar[choice - 1] = charImgButton[count]
-            self.setIconToLabel(self.imageLabel, choice - 1, photo)
+            self.chosenChar[choice - 1] = self.charImageButton[count]
+            setIconToLabel(self.playerIconLabel, choice - 1, photo)
         else:
-            choice = self.stagechoice.get()
+            choice = self.choiceOfStage.get()
             self.chosenstage[choice - 1] = self.stagebutton[count]
-            self.setIconToLabel(self.stageImageLabel, choice - 1, photo)
+            setIconToLabel(self.stageImageLabel, choice - 1, photo)
         copy2(path, config.destinationDirectory + filenamepart + str(choice) + ".png")
 
-    # When a pop up window is closed, we reenable the button that calls it
-    def popupWindowCloseAction(self, window, button):
-        window.destroy()
-        button.config(state=ACTIVE)
-
-    def setIconToLabel(self, labelarray, index, photo):
-        labelarray[index].config(image=photo)
-    
-    def makeImageButtonGrid(self, framename, imgarray, patharray, action, typestring):
-        rowval = 1
-        colval = 0
-        buttoncount = 0
-        rowval = rowval + 1
-        buttonarray = []
-        for photo, path in itertools.zip_longest(imgarray, patharray):
-            b = Button(framename, image=photo, command=partial(action, path, typestring, buttoncount, photo), activebackground='grey')
-            buttoncount = buttoncount + 1
-            buttonarray.append(b)
-            b.grid(row=rowval, column=colval)
-            colval = colval + 1
-            if colval == 16 :
-                colval = 0
-                rowval = rowval + 1
-        return buttonarray
-
-    ''' Single function functions '''
     # Get all images (for stage images and char images) and save a local copy
     def getImages(self):
-        self.charimg = []
-        self.stageimage = []
         for img in config.charImages:
-            self.charimg.append(ImageTk.PhotoImage(img))
+            self.charImageCopy.append(ImageTk.PhotoImage(img))
         for img in config.stageImages:
             img = img.resize((50,50))
-            self.stageimage.append(ImageTk.PhotoImage(img))
+            self.stageImageCopy.append(ImageTk.PhotoImage(img))
 
     # Create a pop up window with image buttons of stages
-    def ShowStagesWindow(self):            
-        self.stageWindow = Toplevel()
+    def ShowStagesWindow(self):  
+        self.stageWindow = Toplevel()          
         self.stageWindow.resizable(width=False, height=False)
-        self.stagebutton.extend(self.makeImageButtonGrid(self.stageWindow, self.stageimage, config.stageImagePaths, self.copytodestinationwithname,"stages"))
+        self.stagebutton.extend(makeImageButtonGrid(self.stageWindow, self.stageImageCopy, config.stageImagePaths, self.copytodestinationwithname,"stage"))
         self.stageChoiceWinButton.config(state=DISABLED)
-        self.stageWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(self.popupWindowCloseAction, self.stageWindow, self.stageChoiceWinButton))
+        self.stageWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(popupWindowCloseAction, self.stageWindow, self.stageChoiceWinButton))
         '''end of function'''
 
     # Create a pop up window with image buttons of chars
     def ShowCharactersWindow(self):            
         self.charWindow = Toplevel()
         self.charWindow.resizable(width=False, height=False)
-        charImgButton.extend(self.makeImageButtonGrid(self.charWindow, self.charimg, config.charImagePaths, self.copytodestinationwithname,"player"))
+        self.charImageButton.extend(makeImageButtonGrid(self.charWindow, self.charImageCopy, config.charImagePaths, self.copytodestinationwithname,"player"))
         self.charChoiceButton.config(state=DISABLED)
-        self.charWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(self.popupWindowCloseAction, self.charWindow, self.charChoiceButton))
+        self.charWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(popupWindowCloseAction, self.charWindow, self.charChoiceButton))
 
     #Set the number of matches for the Stages display
     def setMatches(self):
-        self.matchesCount = self.matchchoice.get()
-        if self.matchesCount == 3:
-            self.stagechoice.set(1)
+        matchesCount = self.choiceOfMatchNumber.get()
+        if matchesCount == 3:
+            self.choiceOfStage.set(1)
             self.stageRadiobutton[3]['state'] ="disabled"
             self.stageRadiobutton[4]['state'] ="disabled"
             copy2(config.stagesDirectory+"default.png", config.destinationDirectory + "stage4.png")
             copy2(config.stagesDirectory+"default.png", config.destinationDirectory + "stage5.png")
-            self.setIconToLabel(self.stageImageLabel, 3, self.stageimage[1])
-            self.setIconToLabel(self.stageImageLabel, 4, self.stageimage[1])
+            setIconToLabel(self.stageImageLabel, 3, self.stageImageCopy[1])
+            setIconToLabel(self.stageImageLabel, 4, self.stageImageCopy[1])
         else:
             self.stageRadiobutton[3]['state'] ="normal"
             self.stageRadiobutton[4]['state'] ="normal"
 
     def makePlayerMenu(self, framename):
-        '''Make radiobuttons to choose the player number to configure (allows setting name, score, character)'''
-        self.imageLabel = []
-        self.chosenChar = []
-        self.playerScore = []
-        self.choiceOfPlayer = IntVar()
-        self.choiceOfPlayer.set(1)
-        CharChoiceButtonFrame = Frame(framename)
-        CharChoiceButtonFrame.grid(row=0, column=0)
+        ''' Makes a button to get icon choice pop up window = CharChoiceButtonFrame
+            Makes radiobuttons to select player = PlayerRadioButtonFrame
+            Makes an (empty) row to hold selected characters for each player = PlayerRadioButtonFrame
+            Makes a textbox and button to set player names = EnterPlayerNameFrame'''
+
+        CharChoiceButtonFrame  = Frame(framename)
         PlayerRadioButtonFrame = Frame(framename)
+        EnterPlayerNameFrame   = Frame(framename)
+
+        CharChoiceButtonFrame.grid(row=0, column=0)
         PlayerRadioButtonFrame.grid(row=1, column=0)
-        EnterPlayerNameFrame = Frame(framename)
         EnterPlayerNameFrame.grid(row=2, column=0)
-        self.playerRadiobutton = makeRadiobuttonGroup(playerNumberArray, PlayerRadioButtonFrame, self.choiceOfPlayer, self.clearTextbox)
+        
+        #CharChoiceButtonFrame
+        self.charChoiceButton = Button(CharChoiceButtonFrame, command=self.ShowCharactersWindow, text="Choose Character")
+        self.charChoiceButton.grid(row=0, column=0)
+
+        #PlayerRadioButtonFrame
+        self.choiceOfPlayer.set(1)
+        self.playerRadiobutton = makeRadiobuttonGroup(playerNumberArray, PlayerRadioButtonFrame, self.choiceOfPlayer, partial(self.clearTextbox, self.playerNameTextbox))
         for radio in self.playerRadiobutton:
             radio.grid_configure(sticky=E)
             self.chosenChar.append(Button())
             self.playerScore.append(0)
-
-        self.charChoiceButton = Button(CharChoiceButtonFrame, command=self.ShowCharactersWindow, text="Choose Character")
-        self.charChoiceButton.grid(row=0, column=0)
-
         colval = 0
         for player in self.playerRadiobutton:
             l = Label(PlayerRadioButtonFrame, text="")
             l.grid(row=1, column=colval)
             colval = colval + 1
-            self.imageLabel.append(l)
-        self.playername = StringVar()
+            self.playerIconLabel.append(l)
+
+        #EnterPlayerNameFrame
+        self.playerName = StringVar()
         Label(EnterPlayerNameFrame, text="Player name").grid(row=0,column=0)
-        self.playerNameTextbox = Entry(EnterPlayerNameFrame, textvariable=self.playername)
+        self.playerNameTextbox = Entry(EnterPlayerNameFrame, textvariable=self.playerName)
         self.playerNameTextbox.grid(row=0, column=1)
         self.playerNameTextbox.bind('<Return>', self.setPlayerName)
         Button(EnterPlayerNameFrame, text="Set name", command=self.setPlayerName).grid(row=0, column=3)
 
     def clearTextbox(self, event=None):
         self.playerNameTextbox.delete(0, 'end')
+
     def setPlayerName(self, event=None):
-        name = self.playername.get()
+        name   = self.playerName.get()
         player = self.choiceOfPlayer.get()
         if name == "":
             name = "Player " + str(player)
@@ -166,23 +156,22 @@ class MakeTabLayout():
         writeStringToFileName(filename, name)
 
     def makeStageMenu(self, framename):
-        '''Make radiobuttons to set the stage for each match (of the total 3 or 5)'''
-        self.chosenstage = []
-        self.stagebutton = []
-        self.stageImageLabel = []
-        self.stagechoice = IntVar()
-        self.matchchoice = IntVar()
-       
-        self.stagechoice.set(1)
-        self.matchchoice.set(5)
-
+        '''Make button to get pop up window for stage choice
+        Make radiobuttons for choice between Three Matcher and Five Matcher
+        Make radiobuttons to choose Stage to set stage image for
+        Make (empty) labels that contain Stage images (when they are set)'''
+        #1
         self.stageChoiceWinButton = Button(framename, command=self.ShowStagesWindow, text="Choose Stage")
         self.stageChoiceWinButton.grid(row=0, column=0)
-        self.stageRadiobutton = makeRadiobuttonGroup(matchNumberArray, framename, self.stagechoice, 0)
+        #2
+        self.choiceOfMatchNumber.set(5)
+        self.matchCount = makeRadiobuttonGroup(matchCountArray, framename, self.choiceOfMatchNumber, self.setMatches)
+        #3
+        self.choiceOfStage.set(1)
+        self.stageRadiobutton = makeRadiobuttonGroup(matchNumberArray, framename, self.choiceOfStage, 0)
         for radio in self.stageRadiobutton:
             self.chosenstage.append(Button())
-        '''Make radiobuttons for choice between Three Matcher and Five Matcher'''
-        self.matchCount = makeRadiobuttonGroup(matchCountArray, framename, self.matchchoice, self.setMatches)
+        #4
         rowval = 2
         colval = 0
         for match in self.stageRadiobutton:
@@ -193,13 +182,8 @@ class MakeTabLayout():
 
 
     def makeAboutTab(self, framename):
-        label = Label(framename, text="Copyright-2019 VogelLover\r\nMade with love for use with SSBM\r\n"
-            "To reach out to me or to read more on how to use Scoreboarder or to look at the source, go to:\n "
+        label = Label(framename, text="Copyright-2019 VogelLover\r\nCustom-made with love for SSBM\r\n"
+            "To report issues, make suggestions/requests, go to:\n "
                 "https://github.com/shrutidevasenapathy/Scoreboarder")
         label.grid(row=0, column=0)
 
-def writeStringToFileName(filename, string):
-    open(filename, 'w').close()
-    file1 = open(filename, "w")
-    file1.write(string)
-    file1.close()

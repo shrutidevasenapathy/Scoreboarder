@@ -13,6 +13,7 @@ import math
 
 # This implements the entire structure and functionality of
 # the scoreboarder app.
+"""
 class DrawScoreboarder():
     def __init__(self, DefaultColour):
 
@@ -192,3 +193,34 @@ class DrawScoreboarder():
         else:
             self.stageRadiobutton[3]['state'] ="normal"
             self.stageRadiobutton[4]['state'] ="normal"
+"""
+
+def writeStringToFileName(filename, string):
+    open(filename, 'w').close()
+    file1 = open(filename, "w")
+    file1.write(string)
+    file1.close()
+
+def popupWindowCloseAction(window, button):
+    window.destroy()
+    button.config(state=ACTIVE)
+
+def setIconToLabel(labelarray, index, photo):
+    labelarray[index].config(image=photo)
+
+def makeImageButtonGrid(framename, imgarray, patharray, action, typestring):
+    rowval = 1
+    colval = 0
+    buttoncount = 0
+    rowval = rowval + 1
+    buttonarray = []
+    for photo, path in itertools.zip_longest(imgarray, patharray):
+        b = Button(framename, image=photo, command=partial(action, path, typestring, buttoncount, photo), activebackground='grey')
+        buttoncount = buttoncount + 1
+        buttonarray.append(b)
+        b.grid(row=rowval, column=colval)
+        colval = colval + 1
+        if colval == 16 :
+            colval = 0
+            rowval = rowval + 1
+    return buttonarray

@@ -8,11 +8,11 @@ import tabLayout
 
 root = Tk()
 DefaultColour = root.cget("bg")
-root.wm_title(string="Scoreboarder - A customized scoreboard helper")
+root.wm_title(string="Scoreboarder")
 try:
     root.wm_iconbitmap(bitmap='samus-red.ico')
 except TclError:
-    print ("icon bitmap error")
+    print ("favicon error")
 
 tabLayout.MakeTabLayout(DefaultColour)
 root.resizable(width=False, height=False)
