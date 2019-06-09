@@ -10,7 +10,7 @@ root = Tk()
 DefaultColour = root.cget("bg")
 root.wm_title(string="Scoreboarder")
 try:
-    root.wm_iconbitmap(bitmap='samus-red.ico')
+    root.wm_iconbitmap(bitmap='favicon.ico')
 except TclError:
     print ("favicon error")
 

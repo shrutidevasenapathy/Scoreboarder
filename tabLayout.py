@@ -75,18 +75,18 @@ class MakeTabLayout():
     def ShowStagesWindow(self):  
         self.stageWindow = Toplevel()          
         self.stageWindow.resizable(width=False, height=False)
-        self.stagebutton.extend(makeImageButtonGrid(self.stageWindow, self.stageImageCopy, config.stageImagePaths, self.copytodestinationwithname,"stage"))
+        self.stagebutton.extend(makeImageButtonGrid(self.stageWindow, self.stageImageCopy, config.stageImagePaths, self.copytodestinationwithname,"stage",0))
         self.stageChoiceWinButton.config(state=DISABLED)
-        self.stageWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(popupWindowCloseAction, self.stageWindow, self.stageChoiceWinButton))
+        self.stageWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(reenableWindowMakingButton, self.stageWindow, self.stageChoiceWinButton))
         '''end of function'''
 
     # Create a pop up window with image buttons of chars
     def ShowCharactersWindow(self):            
         self.charWindow = Toplevel()
         self.charWindow.resizable(width=False, height=False)
-        self.charImageButton.extend(makeImageButtonGrid(self.charWindow, self.charImageCopy, config.charImagePaths, self.copytodestinationwithname,"player"))
+        self.charImageButton.extend(makeImageButtonGrid(self.charWindow, self.charImageCopy, config.charImagePaths, self.copytodestinationwithname,"player", 0))
         self.charChoiceButton.config(state=DISABLED)
-        self.charWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(popupWindowCloseAction, self.charWindow, self.charChoiceButton))
+        self.charWindow.wm_protocol("WM_DELETE_WINDOW", func = partial(reenableWindowMakingButton, self.charWindow, self.charChoiceButton))
 
     #Set the number of matches for the Stages display
     def setMatches(self):
@@ -104,10 +104,8 @@ class MakeTabLayout():
             self.stageRadiobutton[4]['state'] ="normal"
 
     def makePlayerMenu(self, framename):
-        ''' Makes a button to get icon choice pop up window = CharChoiceButtonFrame
-            Makes radiobuttons to select player = PlayerRadioButtonFrame
-            Makes an (empty) row to hold selected characters for each player = PlayerRadioButtonFrame
-            Makes a textbox and button to set player names = EnterPlayerNameFrame'''
+        ''' Populate player menu tab '''
+        ''' framename - name of the frame in which the player menu tab is to be populated '''
 
         CharChoiceButtonFrame  = Frame(framename)
         PlayerRadioButtonFrame = Frame(framename)
@@ -138,15 +136,40 @@ class MakeTabLayout():
         #EnterPlayerNameFrame
         self.playerName = StringVar()
         Label(EnterPlayerNameFrame, text="Player name").grid(row=0,column=0)
-        self.playerNameTextbox = Entry(EnterPlayerNameFrame, textvariable=self.playerName)
-        self.playerNameTextbox.grid(row=0, column=1)
-        self.playerNameTextbox.bind('<Return>', self.setPlayerName)
+        #self.playerNameTextbox = Entry(EnterPlayerNameFrame, textvariable=self.playerName)
+        #self.playerNameTextbox.grid(row=0, column=1)
+        #self.playerNameTextbox.bind('<Return>', self.setPlayerName)
+        
         Button(EnterPlayerNameFrame, text="Set name", command=self.setPlayerName).grid(row=0, column=3)
+        #lbox = Listbox(EnterPlayerNameFrame, activestyle = "dotbox", listvariable = listvar)
+        playernamesoptions = self.getFileContents()
+        if (len(playernamesoptions) == 0):
+            playernamesoptions = ["Player 1", "Player 2", "Player 3", "Player 4"]
+        lbox = OptionMenu(EnterPlayerNameFrame, self.playerName, *playernamesoptions)
+        lbox.grid(row = 0, column = 1)
+        print(self.getFileContents())
+        #listvar.set (self.getFileContents())
 
     def clearTextbox(self, event=None):
+        ''' Clear text box '''
         self.playerNameTextbox.delete(0, 'end')
+    
+    def getFileContents(self):
+        ''' Get list of names of players from a file'''
+        try:
+            filename = config.playerNameDirectory + "PlayerList.txt"
+            file1 = open(filename, "r")
+            filecontents = file1.readlines()
+            file1.close()
+            return filecontents
+
+        except :
+            print("Could  not get 'PlayerList.txt'")
+            return []
+
 
     def setPlayerName(self, event=None):
+        ''' Set name of player to output file '''
         name   = self.playerName.get()
         player = self.choiceOfPlayer.get()
         if name == "":
