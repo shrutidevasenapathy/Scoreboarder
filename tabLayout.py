@@ -16,6 +16,7 @@ configuration = config.configuration
 
 class MakeTabLayout():
     def defineSelfVariables(self):
+        self.RoundsTab = makeFrameTab(self.widget)
         self.PlayerTab = makeFrameTab(self.widget)
         self.StageTab  = makeFrameTab(self.widget)
         self.AboutTab  = makeFrameTab(self.widget)
@@ -40,13 +41,30 @@ class MakeTabLayout():
         self.defaultcolour = DefaultColour
         self.defineSelfVariables()
 
+        self.makeRoundsTab (self.RoundsTab)
         self.makePlayerMenu(self.PlayerTab)
         self.makeStageMenu (self.StageTab )
         self.makeAboutTab  (self.AboutTab)
         self.widget.add(self.PlayerTab, text="Players") 
         self.widget.add(self.StageTab,  text="Stages")
+        self.widget.add(self.RoundsTab, text="Rounds")
         self.widget.add(self.AboutTab,  text="About")
         self.widget.grid(row=1, column=1)
+
+    def changeScore(self, direction):
+        player = self.choiceOfPlayer.get()
+        score = self.playerScore[player-1]
+        if direction == "plus":
+            score = score + 1
+        else:
+            score = score - 1
+        if score > self.choiceOfMatchNumber.get():
+            score = self.choiceOfMatchNumber.get()
+        elif score < 0:
+            score = 0
+        self.playerScore[player-1] = score
+        filename = config.scoresDir + "Score"+str(player)+".txt"
+        writeStringToFileName(filename, str(score))
 
     #copy file to destination with a choice number in the name
     def copytodestinationwithname(self, path, filenamepart, count, photo):
@@ -61,7 +79,7 @@ class MakeTabLayout():
             choice = self.choiceOfStage.get()
             self.chosenstage[choice - 1] = self.stagebutton[count]
             setIconToLabel(self.stageImageLabel, choice - 1, photo)
-        copy2(path, config.destinationDirectory + filenamepart + str(choice) + ".png")
+        copy2(path, config.outputDir + filenamepart + str(choice) + ".png")
 
     # Get all images (for stage images and char images) and save a local copy
     def getImages(self):
@@ -95,13 +113,27 @@ class MakeTabLayout():
             self.choiceOfStage.set(1)
             self.stageRadiobutton[3]['state'] ="disabled"
             self.stageRadiobutton[4]['state'] ="disabled"
-            copy2(config.stagesDirectory+"default.png", config.destinationDirectory + "stage4.png")
-            copy2(config.stagesDirectory+"default.png", config.destinationDirectory + "stage5.png")
+            copy2(config.stageIconsDir+"default.png", config.outputDir + "stage4.png")
+            copy2(config.stageIconsDir+"default.png", config.outputDir + "stage5.png")
             setIconToLabel(self.stageImageLabel, 3, self.stageImageCopy[1])
             setIconToLabel(self.stageImageLabel, 4, self.stageImageCopy[1])
         else:
             self.stageRadiobutton[3]['state'] ="normal"
             self.stageRadiobutton[4]['state'] ="normal"
+
+    def makeRoundsTab(self, framename):
+        self.roundName = StringVar()
+        Button(framename, text="Set name", command=self.setRoundName).grid(row=0, column=3)
+        #lbox = Listbox(EnterPlayerNameFrame, activestyle = "dotbox", listvariable = listvar)
+        roundnamesoptions = self.getFileContents(config.roundNamesFile)
+        if (len(roundnamesoptions) == 0):
+            roundnamesoptions = ["Round 1", "Round 2"]
+        lbox = OptionMenu(framename, self.roundName, *roundnamesoptions)
+        lbox.grid(row = 0, column = 1)
+        lbox.config(width=15)
+        lbox.config(relief=RIDGE)
+        self.roundName.set(roundnamesoptions[0])
+
 
     def makePlayerMenu(self, framename):
         ''' Populate player menu tab '''
@@ -110,10 +142,12 @@ class MakeTabLayout():
         CharChoiceButtonFrame  = Frame(framename)
         PlayerRadioButtonFrame = Frame(framename)
         EnterPlayerNameFrame   = Frame(framename)
+        ScoresFrame            = Frame(framename)
 
         CharChoiceButtonFrame.grid(row=0, column=0)
         PlayerRadioButtonFrame.grid(row=1, column=0)
         EnterPlayerNameFrame.grid(row=2, column=0)
+        ScoresFrame.grid(row=3,column=0)
         
         #CharChoiceButtonFrame
         self.charChoiceButton = Button(CharChoiceButtonFrame, command=self.ShowCharactersWindow, text="Choose Character")
@@ -142,31 +176,41 @@ class MakeTabLayout():
         
         Button(EnterPlayerNameFrame, text="Set name", command=self.setPlayerName).grid(row=0, column=3)
         #lbox = Listbox(EnterPlayerNameFrame, activestyle = "dotbox", listvariable = listvar)
-        playernamesoptions = self.getFileContents()
+        playernamesoptions = self.getFileContents(config.playerNamesFile)
         if (len(playernamesoptions) == 0):
             playernamesoptions = ["Player 1", "Player 2", "Player 3", "Player 4"]
         lbox = OptionMenu(EnterPlayerNameFrame, self.playerName, *playernamesoptions)
         lbox.grid(row = 0, column = 1)
-        print(self.getFileContents())
-        #listvar.set (self.getFileContents())
+        lbox.config(width=15)
+        lbox.config(relief=RIDGE)
+        self.playerName.set(playernamesoptions[0])
+        Label(ScoresFrame, text="Set Score").grid(row=0, column=1)
+        makeButton(ScoresFrame, "Score +", partial(self.changeScore, "plus"),  0, 2)
+        makeButton(ScoresFrame, "Score -", partial(self.changeScore, "minus"), 0, 3)
+    
 
     def clearTextbox(self, event=None):
         ''' Clear text box '''
         self.playerNameTextbox.delete(0, 'end')
     
-    def getFileContents(self):
+    def getFileContents(self, name):
         ''' Get list of names of players from a file'''
         try:
-            filename = config.playerNameDirectory + "PlayerList.txt"
+            filename = name
             file1 = open(filename, "r")
-            filecontents = file1.readlines()
+            filecontents = file1.read().splitlines()
             file1.close()
             return filecontents
 
         except :
-            print("Could  not get 'PlayerList.txt'")
+            print("Could not get file", name)
             return []
 
+    def setRoundName(self, event=None):
+        ''' Set name of player to output file '''
+        name = self.roundName.get()
+        filename = config.roundNameDir + "Roundname.txt"
+        writeStringToFileName(filename, name)
 
     def setPlayerName(self, event=None):
         ''' Set name of player to output file '''
@@ -175,7 +219,7 @@ class MakeTabLayout():
         if name == "":
             name = "Player " + str(player)
         self.playerRadiobutton[player-1].config(text=name)
-        filename = config.playerNameDirectory + "Player"+str(player)+'.txt'
+        filename = config.playerNameDir + "Player"+str(player)+'.txt'
         writeStringToFileName(filename, name)
 
     def makeStageMenu(self, framename):

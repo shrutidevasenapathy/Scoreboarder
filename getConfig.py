@@ -29,11 +29,15 @@ def getAllImagesFrom(dir):
         filepaths.append(dir + imagefilename)
     return images, filepaths
 
-stagesDirectory      = configuration['Stages']
-destinationDirectory = configuration['OBSFolder']
-scoresDirectory      = configuration['Scores']
-playerNameDirectory  = configuration['Playernames']
-roundNameDirectory   = configuration['Round']
+charIconsDir   = configuration['Char Icons']
+stageIconsDir  = configuration['Stage Icons']
+playerNamesFile= configuration['Player Input']
+roundNamesFile = configuration['Round Input']
 
-charImages, charImagePaths   = getAllImagesFrom(configuration['Icons'])
-stageImages, stageImagePaths = getAllImagesFrom(configuration['Stages'])
+outputDir      = configuration['Output']
+scoresDir      = configuration['Score Output']
+playerNameDir  = configuration['Player Names']
+roundNameDir   = configuration['Round Names']
+
+charImages, charImagePaths   = getAllImagesFrom(charIconsDir)
+stageImages, stageImagePaths = getAllImagesFrom(stageIconsDir)

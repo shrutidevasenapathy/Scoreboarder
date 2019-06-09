@@ -1,0 +1,10 @@
+{
+    "Char Icons"   : "char-icons/",
+    "Stage Icons"  : "stage-icons/",
+    "Player Input" : "PlayerList.txt",
+    "Round Input"  : "RoundList.txt",
+    "Output"       : "C:/Users/sdevasenapathy/Documents/OBSFolder/",
+    "Score Output" : "C:/Users/sdevasenapathy/Documents/OBSFolder/",
+    "Player Names" : "C:/Users/sdevasenapathy/Documents/OBSFolder/",
+    "Round Names"  : "C:/Users/sdevasenapathy/Documents/OBSFolder/"
+}

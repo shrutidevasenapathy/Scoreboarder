@@ -56,8 +56,10 @@ def makeImageButtonGrid(framename, imgarray, patharray, action, typestring, rowv
         buttonarray.append(b)
         b.grid(row=rowval, column=colval)
         colval = colval + 1
+        ''' 16 Columns look good on a screen, so we limit to 16'''
         if colval == 16 :
             colval = 0
             rowval = rowval + 1
 
     return buttonarray
+
