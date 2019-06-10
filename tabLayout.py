@@ -64,7 +64,7 @@ class MakeTabLayout():
             score = 0
         self.playerScore[player-1] = score
         filename = config.scoresDir + "Score"+str(player)+".txt"
-        writeStringToFileName(filename, str(score))
+        writeStringToFile(filename, str(score))
 
     #copy file to destination with a choice number in the name
     def copytodestinationwithname(self, path, filenamepart, count, photo):
@@ -210,7 +210,7 @@ class MakeTabLayout():
         ''' Set name of player to output file '''
         name = self.roundName.get()
         filename = config.roundNameDir + "Roundname.txt"
-        writeStringToFileName(filename, name)
+        writeStringToFile(filename, name)
 
     def setPlayerName(self, event=None):
         ''' Set name of player to output file '''
@@ -220,7 +220,7 @@ class MakeTabLayout():
             name = "Player " + str(player)
         self.playerRadiobutton[player-1].config(text=name)
         filename = config.playerNameDir + "Player"+str(player)+'.txt'
-        writeStringToFileName(filename, name)
+        writeStringToFile(filename, name)
 
     def makeStageMenu(self, framename):
         '''Make button to get pop up window for stage choice

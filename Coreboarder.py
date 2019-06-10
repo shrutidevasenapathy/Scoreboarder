@@ -12,7 +12,7 @@ from FrameElements import *
 import math
 
 
-def writeStringToFileName(filename, string):
+def writeStringToFile(filename, string):
     ''' Write specified string to the specified filename'''
     ''' filename - name of file to hold the string '''
     ''' string - string to write to file '''
